@@ -1,0 +1,48 @@
+<div class="animated fadeIn mt-2">
+  <div class="ui-widget-header datatable-header display-flex space-between" style="padding:4px 10px;border-bottom: 0 none">
+      <span class="table-name">{{workerName}}'s Task List</span>
+      <button type="button" pButton (click)="onCreateTask()" label="Add"></button>
+  </div>
+  <p-dataTable [value]="tasks" 
+               [rows]="10" 
+               [paginator]="true" 
+               [pageLinks]="5" 
+               [rowsPerPageOptions]="[5,10,25,50]" 
+               selectionMode="single"
+               [(selection)]="selectedTask" 
+               dataKey="Id"
+               [globalFilter]="gb">
+               <p-column field="Id" header="Id" hidden="true"></p-column>
+               <p-column field="TaskDesc" [sortable]="true" header="Task Description"></p-column>
+               <p-column field="Deadline" [sortable]="true" header="Deadline"></p-column>
+               <p-column field="Priority" [sortable]="true" header="Priority"></p-column>
+               <p-footer>
+                <div class="ui-helper-clearfix datatable-footer" style="width:100%">
+                    <button type="button" pButton (click)="onEditTask()" [disabled]="!selectedTask" label="Edit"></button>
+                    <button type="button" pButton (click)="deleteConfirm(selectedTask.Id)" [disabled]="!selectedTask" label="Delete"></button>
+                </div>
+              </p-footer>
+  </p-dataTable>
+</div>
+
+<p-dialog 
+  header="Create task" 
+  [(visible)]="createDialogVisible"
+  [height]="410"
+  [width]="350">
+  <app-task-create
+    *ngIf="createDialogVisible"
+    (onCreated)="onEdit($event)"
+    [workerId]="workerId">
+  </app-task-create>
+</p-dialog>
+
+<p-dialog header="Edit task" [(visible)]="editDialogVisible">
+  <app-task-edit
+    *ngIf="editDialogVisible"
+    (onEdited)="onEdit($event)"
+    [task] = 'selectedTask'>
+  </app-task-edit>
+</p-dialog>
+
+<p-confirmDialog header="Confirmation" icon="fa fa-question-circle" width="425"></p-confirmDialog>

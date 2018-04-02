@@ -1,0 +1,38 @@
+<div class="animated fadeIn"> 
+    <form [formGroup]="taskForm" (ngSubmit)="onSubmit()" class="form-horizontal">        
+      <div class="form-group">
+        <label for="TaskDesc">TaskDesc</label>
+        <input 
+          class="form-control"    
+          type="text" 
+          id="TaskDesc" 
+          name="TaskDesc" 
+          pInputText 
+          formControlName="TaskDesc">
+      </div>
+      <div class="form-group">
+        <label for="Deadline">Deadline</label>
+        <p-calendar 
+          dateFormat="dd.mm.yy"
+          [style]="{'width':'100%'}"
+          [inputStyle]="{'width':'100%'}"
+          id="Deadline" 
+          name="Deadline"                      
+          formControlName="Deadline">
+        </p-calendar>
+      </div>     
+      <div class="form-group">
+        <label for="Priority">Priority</label>
+        <p-dropdown 
+          [style]="{'width':'100%'}"
+          id="Priority" 
+          [options]="priorities" 
+          formControlName="Priority"
+          name="Priority">
+        </p-dropdown>   
+      </div>
+      <div>
+        <button type="submit" class="btn btn-sm btn-primary" [disabled]="!taskForm.valid"><i class="fa fa-dot-circle-o"></i> Save</button>
+      </div>
+    </form>
+  </div>

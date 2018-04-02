@@ -1,1 +1,25 @@
 /* You can add global styles to this file, and also import other style files */
+.container{
+    max-width: 1100px;
+    margin: auto;
+}
+
+.navbar{
+    border: 1px solid #d9d9d9;
+}
+.navbar-brand{
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+.display-flex{
+    display: flex;
+}
+.space-between{
+    justify-content: space-between !important;
+}
+.table-name{
+    font-size: 1.3rem;
+}
+.datatable-footer{
+    text-align: right
+}

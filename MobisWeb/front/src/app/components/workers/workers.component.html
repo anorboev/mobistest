@@ -1,0 +1,74 @@
+<div class="animated fadeIn" style="clear:both">
+    <div class="ui-widget-header datatable-header display-flex space-between" style="padding:4px 10px;border-bottom: 0 none">
+      <span class="table-name">Workers List</span>
+      <div class="form-group mb-0">
+        <label for="CompanyId">Companies</label>
+        <p-dropdown 
+          [styleClass]="{'form-control':'true'}"
+          [style]="{'width':'150px'}"
+          id="CompanyId" 
+          [options]="companies" 
+          [(ngModel)]="companyId"
+          name="CompanyId"
+          (onChange)="filterWorkers()"
+          [filter]="true">
+        </p-dropdown>
+      </div>
+
+      <button type="button" pButton (click)="showDialog()" label="Add"></button>
+    </div>
+    <p-dataTable [value]="filteredWorkers" 
+                 [rows]="10" 
+                 [paginator]="true" 
+                 [pageLinks]="5" 
+                 [rowsPerPageOptions]="[5,10,25,50]" 
+                 selectionMode="single"
+                 [(selection)]="selectedWorker" 
+                 dataKey="Id"
+                 [globalFilter]="gb">
+      <p-column field="Id" header="Id" hidden="true"></p-column>
+      <p-column field="FullName" [sortable]="true" header="Name"></p-column>
+      <p-column field="Address" [sortable]="true" header="Address"></p-column>
+      <p-column field="PhoneNumber" [sortable]="true" header="PhoneNumber"></p-column>
+      <p-column field="CompanyName" [sortable]="true" header="Company"></p-column>
+      <p-footer>
+        <div class="ui-helper-clearfix datatable-footer" style="width:100%">
+          <button type="button" pButton (click)="onEditWorker()" [disabled]="!selectedWorker" label="Edit"></button>
+          <button type="button" pButton (click)="deleteConfirm(selectedWorker.Id)" [disabled]="!selectedWorker" label="Delete"></button>
+        </div>
+      </p-footer>
+    </p-dataTable>
+  </div>
+  
+
+  <div *ngIf="selectedWorker">
+    <app-tasks
+      *ngIf="selectedWorker"
+      [workerId]="selectedWorker.Id"
+      [workerName]="selectedWorker.FullName">
+    </app-tasks>
+  </div>
+  <p-dialog 
+    header="Create Worker" 
+    [(visible)]="createWorkerVisible"
+    [width]="350"
+    [height]="450">
+    <app-worker-create
+      (onCreated)="onEdit($event)"
+      [companies]="companies">
+    </app-worker-create>
+  </p-dialog>
+  
+  <p-dialog 
+    header="Edit Company" 
+    [(visible)]="editDialogVisible"
+    [width]="350"
+    [height]="450">
+    <app-worker-edit
+      *ngIf="editDialogVisible"
+      (onEdited)="onEdit($event)"
+      [worker] = 'selectedWorker'
+      [companies]="companies">
+    </app-worker-edit>
+  </p-dialog>
+  <p-confirmDialog header="Confirmation" icon="fa fa-question-circle" width="425"></p-confirmDialog>

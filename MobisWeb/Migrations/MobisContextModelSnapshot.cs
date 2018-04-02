@@ -27,13 +27,19 @@ namespace MobisWeb.Migrations
 
                     b.Property<DateTime>("AddedDate");
 
-                    b.Property<string>("Address");
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasMaxLength(512);
 
                     b.Property<DateTime>("EditedDate");
 
-                    b.Property<string>("Name");
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50);
 
-                    b.Property<string>("PhoneNumber");
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasMaxLength(20);
 
                     b.HasKey("Id");
 
@@ -53,7 +59,9 @@ namespace MobisWeb.Migrations
 
                     b.Property<int>("Priority");
 
-                    b.Property<string>("TaskDesc");
+                    b.Property<string>("TaskDesc")
+                        .IsRequired()
+                        .HasMaxLength(512);
 
                     b.Property<int>("WorkerId");
 
@@ -71,17 +79,21 @@ namespace MobisWeb.Migrations
 
                     b.Property<DateTime>("AddedDate");
 
-                    b.Property<string>("Address");
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasMaxLength(512);
 
-                    b.Property<int?>("CompanyId");
-
-                    b.Property<int>("ComponyId");
+                    b.Property<int>("CompanyId");
 
                     b.Property<DateTime>("EditedDate");
 
-                    b.Property<string>("FullName");
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .HasMaxLength(50);
 
-                    b.Property<string>("PhoneNumber");
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasMaxLength(20);
 
                     b.HasKey("Id");
 
@@ -102,7 +114,8 @@ namespace MobisWeb.Migrations
                 {
                     b.HasOne("MobisData.Models.Company", "Company")
                         .WithMany("Workers")
-                        .HasForeignKey("CompanyId");
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
         }

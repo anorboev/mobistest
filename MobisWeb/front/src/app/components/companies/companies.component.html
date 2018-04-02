@@ -1,0 +1,51 @@
+<div class="animated fadeIn" style="clear:both">
+  <div class="ui-widget-header display-flex space-between" style="padding:4px 10px;border-bottom: 0 none">
+    <span class="table-name">Companies List</span>
+    <button type="button" pButton (click)="showDialog()" label="Add"></button>
+  </div>
+  <p-dataTable [value]="companies" 
+               [rows]="10" 
+               [paginator]="true" 
+               [pageLinks]="5" 
+               [rowsPerPageOptions]="[5,10,25,50]" 
+               selectionMode="single"
+               [(selection)]="selectedCompany" 
+               dataKey="Id"
+               [globalFilter]="gb">
+               <p-column field="Id" header="Id" hidden="true"></p-column>
+               <p-column field="Name" [sortable]="true" header="Name"></p-column>
+               <p-column field="Address" [sortable]="true" header="Address"></p-column>
+               <p-column field="PhoneNumber" [sortable]="true" header="PhoneNumber"></p-column>
+               <p-column field="WorkersQuantity" [sortable]="true" header="Workers Quantity"></p-column>
+               <p-footer>
+                <div class="ui-helper-clearfix datatable-footer" style="width:100%">
+                    <button type="button" pButton (click)="onEditCompany()" [disabled]="!selectedCompany" label="Edit"></button>
+                    <button type="button" pButton (click)="deleteConfirm(selectedCompany)" [disabled]="!selectedCompany" label="Delete"></button>
+                </div>
+              </p-footer>
+  </p-dataTable>
+</div>
+
+<p-dialog 
+    header="Create Company" 
+    [(visible)]="dialogVisible"
+    [width]="350"
+    [height]="410">
+  <app-company-create
+    (onCreated)="onEdit($event)">
+  </app-company-create>
+</p-dialog>
+
+<p-dialog 
+  header="Edit Company" 
+  [(visible)]="editDialogVisible"
+  [width]="350"
+  [height]="410">
+  <app-company-edit
+    *ngIf="editDialogVisible"
+    (onEdited)="onEdit($event)"
+    [companyId] = 'selectedCompany.Id'>
+  </app-company-edit>
+</p-dialog>
+
+<p-confirmDialog header="Confirmation" icon="fa fa-question-circle" width="425"></p-confirmDialog>

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MobisData.Models;
+using MobisWeb.Models;
 
 namespace MobisWeb.Controllers
 {
@@ -22,9 +23,18 @@ namespace MobisWeb.Controllers
 
         // GET: api/Workers
         [HttpGet]
-        public IEnumerable<Worker> GetWorkers()
+        public IEnumerable<WorkersViewModel> GetWorkers()
         {
-            return _context.Workers;
+            var list = _context.Workers.ToList().Select(w => new WorkersViewModel()
+            {
+                Address = w.Address,
+                CompanyName = _context.Companies.Find(w.CompanyId).Name,
+                CompanyId = w.CompanyId,
+                FullName = w.FullName,
+                Id = w.Id,
+                PhoneNumber = w.PhoneNumber
+            });
+            return list;
         }
 
         // GET: api/Workers/5
@@ -46,54 +56,45 @@ namespace MobisWeb.Controllers
             return Ok(worker);
         }
 
-        // PUT: api/Workers/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutWorker([FromRoute] int id, [FromBody] Worker worker)
+        // PUT: api/Workers
+        [HttpPut]
+        public async Task<IActionResult> PutWorker([FromBody] Worker model)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            if (id != worker.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(worker).State = EntityState.Modified;
-
+            var worker = _context.Workers.Find(model.Id);
+            worker.FullName = model.FullName;
+            worker.Address = model.Address;
+            worker.PhoneNumber = model.PhoneNumber;
+            worker.CompanyId = model.CompanyId;
+            worker.EditedDate = DateTime.Now;
             try
             {
                 await _context.SaveChangesAsync();
             }
-            catch (DbUpdateConcurrencyException)
+            catch
             {
-                if (!WorkerExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return Ok(false);
             }
 
-            return NoContent();
+            return Ok(true);
         }
 
         // POST: api/Workers
         [HttpPost]
         public async Task<IActionResult> PostWorker([FromBody] Worker worker)
         {
-            if (!ModelState.IsValid)
+            worker.AddedDate = DateTime.Now;
+            worker.EditedDate = DateTime.Now;
+            _context.Workers.Add(worker);
+            try
             {
-                return BadRequest(ModelState);
+                await _context.SaveChangesAsync();
+            }
+            catch
+            {
+                return Ok(false);
             }
 
-            _context.Workers.Add(worker);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetWorker", new { id = worker.Id }, worker);
+            return Ok(true);
         }
 
         // DELETE: api/Workers/5

@@ -1,0 +1,45 @@
+<div class="form-group">
+  <label for="{{cName}}">{{cDisplayName || cName}}</label>
+  <input 
+    *ngIf="type=='text'"
+    [(ngModel)]="value"
+    class="form-control"
+    type="text"  
+    pInputText
+    (onBlur)="onBlur()"
+    id="{{cName}}" 
+    name="{{cName}}">
+
+  <p-inputMask 
+    *ngIf="type=='mask'"
+    [styleClass]="{'form-control':'true'}"
+    id="{{cName}}" 
+    [(ngModel)]="value" 
+    mask="{{mask}}" 
+    name="{{cName}}">
+  </p-inputMask>
+
+  <p-dropdown 
+    *ngIf="type=='dropdown'"
+    [styleClass]="{'form-control':'true'}"
+    [style]="{'width':'100%'}"
+    id="{{cName}}"  
+    [options]="selectItems" 
+    [(ngModel)]="value"
+    name="{{cName}}"
+    [filter]="filter">
+  </p-dropdown>
+
+  <p-calendar 
+    *ngIf="type=='calendar'"
+    dateFormat="dd.mm.yy"
+    [style]="{'width':'100%'}"
+    [inputStyle]="{'width':'100%'}"
+    id="{{cName}}" 
+    name="{{cName}}"                      
+    [(ngModel)]="value">
+  </p-calendar>
+</div>
+
+    
+

@@ -1,0 +1,23 @@
+<div class="animated fadeIn"> 
+  <form [formGroup]="taskForm" (ngSubmit)="onSubmit()" class="form-horizontal">        
+    <form-group 
+      [cName]="'TaskDesc'"
+      [cDisplayName]="'Task description'"
+      formControlName="TaskDesc">          
+    </form-group>
+    <form-group 
+      [cName]="'Deadline'"
+      [type]="'calendar'"
+      formControlName="Deadline">          
+    </form-group>
+    <form-group 
+      [cName]="'Priority'"
+      [type]="'dropdown'"
+      [selectItems]="priorities"
+      formControlName="Priority">          
+    </form-group>
+    <div>
+      <button type="submit" class="btn btn-sm btn-primary" [disabled]="!taskForm.valid"><i class="fa fa-dot-circle-o"></i> Save</button>
+    </div>
+  </form>
+</div>

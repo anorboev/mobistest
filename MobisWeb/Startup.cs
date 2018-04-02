@@ -4,6 +4,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MobisData.Models;
 using Microsoft.EntityFrameworkCore;
+using System.IO;
+using Newtonsoft.Json.Serialization;
 
 namespace MobisWeb
 {
@@ -19,11 +21,13 @@ namespace MobisWeb
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc();
+            services
+                .AddMvc()
+                .AddJsonOptions(options => options.SerializerSettings.ContractResolver = new DefaultContractResolver());
 
-            var connection = @"Server=DESKTOP-LMVI8DQ\MANSSERVER;Database=MobisTest;Trusted_Connection=True;ConnectRetryCount=0";
+            var connectionString = Configuration.GetConnectionString("DbConnection");
             services.AddDbContext<MobisContext>(options => 
-                    options.UseSqlServer(connection, b => b.MigrationsAssembly("MobisWeb")));
+                    options.UseSqlServer(connectionString, b => b.MigrationsAssembly("MobisWeb")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -34,7 +38,21 @@ namespace MobisWeb
                 app.UseDeveloperExceptionPage();
             }
 
+            app.Use(async (context, next) =>
+            {
+                await next();
+
+                if (context.Response.StatusCode == 404 &&
+                    !Path.HasExtension(context.Request.Path.Value) &&
+                    !context.Request.Path.Value.StartsWith("/api/"))
+                {
+                    context.Request.Path = "/index.html";
+                    await next();
+                }
+            });
+
             app.UseMvc();
+            app.UseStaticFiles();
         }
     }
 }

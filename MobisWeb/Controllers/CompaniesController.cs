@@ -5,7 +5,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Extensions.Internal;
 using MobisData.Models;
+using MobisWeb.Models;
 
 namespace MobisWeb.Controllers
 {
@@ -22,9 +24,18 @@ namespace MobisWeb.Controllers
 
         // GET: api/Companies
         [HttpGet]
-        public IEnumerable<Company> GetCompanies()
+        public JsonResult GetCompanies()
         {
-            return _context.Companies;
+            var list = _context.Companies.Select(x => new CompanyListViewModel()
+            {
+                Address = x.Address,
+                Id = x.Id,
+                Name = x.Name,
+                PhoneNumber = x.PhoneNumber,
+                WorkersQuantity = x.Workers.Count()
+            }); 
+            var json = Json(list);
+            return json;
         }
 
         // GET: api/Companies/5
@@ -48,37 +59,23 @@ namespace MobisWeb.Controllers
 
         // PUT: api/Companies/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCompany([FromRoute] int id, [FromBody] Company company)
+        public async Task<IActionResult> PutCompany([FromBody]Company model)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            if (id != company.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(company).State = EntityState.Modified;
-
+            var company = _context.Companies.Find(model.Id);
+            company.Name = model.Name;
+            company.Address = model.Address;
+            company.PhoneNumber = model.PhoneNumber;
+            company.EditedDate = DateTime.Now;
             try
             {
                 await _context.SaveChangesAsync();
             }
-            catch (DbUpdateConcurrencyException)
+            catch
             {
-                if (!CompanyExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return Ok(false);
             }
 
-            return NoContent();
+            return Ok(true);
         }
 
         // POST: api/Companies
@@ -87,13 +84,21 @@ namespace MobisWeb.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return Ok(false);
+            }
+            company.AddedDate = DateTime.Now;
+            company.EditedDate = DateTime.Now;
+            _context.Companies.Add(company);
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch
+            {
+                return Ok(false);
             }
 
-            _context.Companies.Add(company);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetCompany", new { id = company.Id }, company);
+            return Ok(true);
         }
 
         // DELETE: api/Companies/5
@@ -120,6 +125,14 @@ namespace MobisWeb.Controllers
         private bool CompanyExists(int id)
         {
             return _context.Companies.Any(e => e.Id == id);
+        }
+
+        [HttpGet("fordropdown")]
+        public JsonResult GetForDropDown()
+        {
+            var list = _context.Companies.Select(x => new DropDownModel(x.Id, x.Name)).ToList();
+            list.Insert(0, new DropDownModel(null, "All"));
+            return Json(list);
         }
     }
 }

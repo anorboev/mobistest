@@ -1,0 +1,22 @@
+<div class="animated fadeIn"> 
+    <form [formGroup]="companyForm" (ngSubmit)="onSubmit()" class="form-horizontal">      
+      <form-group 
+        [cName]="'Name'"
+        formControlName="Name">          
+      </form-group>
+      <form-group 
+        [cName]="'Address'"
+        formControlName="Address">          
+      </form-group>
+      <form-group 
+        [cName]="'PhoneNumber'"
+        [type]="'mask'"
+        [mask]="'(99) 999 99 99'"
+        formControlName="PhoneNumber">          
+      </form-group>               
+      <div>
+        <button type="submit" class="btn btn-sm btn-primary float-right" [disabled]="!companyForm.valid"><i class="fa fa-dot-circle-o"></i> Save</button>
+      </div> 
+    </form>
+  </div>
+  

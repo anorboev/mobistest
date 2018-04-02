@@ -1,9 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MobisData.Models;
+using MobisWeb.Models;
 using _Task = MobisData.Models.Task;
 
 namespace MobisWeb.Controllers
@@ -19,11 +22,19 @@ namespace MobisWeb.Controllers
             _context = context;
         }
 
-        // GET: api/Tasks
-        [HttpGet]
-        public IEnumerable<_Task> GetTasks()
+        // GET: api/Tasks/GetByWorker
+        [HttpGet("GetByWorker/{id}")]
+        public IEnumerable<TasksViewModel> GetTasks([FromRoute] int id)
         {
-            return _context.Tasks;
+            var list = _context.Tasks.Where(x => x.WorkerId == id).Select(task => new TasksViewModel()
+            {
+                Deadline = task.Deadline.ToString("dd.MM.yyyy"),
+                Id = task.Id,
+                Priority = task.Priority,
+                TaskDesc = task.TaskDesc,
+                WorkerId = task.WorkerId
+            });
+            return list;
         }
 
         // GET: api/Tasks/5
@@ -36,63 +47,68 @@ namespace MobisWeb.Controllers
             }
 
             var task = await _context.Tasks.SingleOrDefaultAsync(m => m.Id == id);
+            var _task = new TasksViewModel()
+            {
+                Deadline = task.Deadline.ToString("dd.MM.yyyy"),
+                Id = task.Id,
+                Priority = task.Priority,
+                TaskDesc = task.TaskDesc,
+                WorkerId = task.WorkerId
+            };
 
             if (task == null)
             {
                 return NotFound();
             }
 
-            return Ok(task);
+            return Ok(_task);
         }
 
         // PUT: api/Tasks/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutTask([FromRoute] int id, [FromBody] _Task task)
+        [HttpPut]
+        public async Task<IActionResult> PutTask([FromBody]TasksViewModel model)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            if (id != task.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(task).State = EntityState.Modified;
-
+            var task = _context.Tasks.Find(model.Id);
+            task.Priority = model.Priority;
+            task.TaskDesc = model.TaskDesc;
+            task.Deadline = DateTime.ParseExact(model.Deadline, "d.M.yyyy", CultureInfo.InvariantCulture);
+            task.EditedDate = DateTime.Now;
             try
             {
                 await _context.SaveChangesAsync();
             }
-            catch (DbUpdateConcurrencyException)
+            catch
             {
-                if (!TaskExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return Ok(false);
             }
 
-            return NoContent();
+            return Ok(true);
         }
 
         // POST: api/Tasks
         [HttpPost]
-        public async Task<IActionResult> PostTask([FromBody] _Task task)
+        public async Task<IActionResult> PostTask([FromBody] TasksViewModel model)
         {
-            if (!ModelState.IsValid)
+            _Task task = new _Task()
             {
-                return BadRequest(ModelState);
+                Deadline = DateTime.ParseExact(model.Deadline, "d.M.yyyy", CultureInfo.InvariantCulture),
+                Priority = model.Priority,
+                TaskDesc = model.TaskDesc,
+                WorkerId = model.WorkerId,
+                AddedDate = DateTime.Now,
+                EditedDate = DateTime.Now
+            };
+            _context.Tasks.Add(task);
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch
+            {
+                return Ok(false);
             }
 
-            _context.Tasks.Add(task);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetTask", new { id = task.Id }, task);
+            return Ok(true);
         }
 
         // DELETE: api/Tasks/5
