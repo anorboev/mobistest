@@ -10,8 +10,7 @@
                [rowsPerPageOptions]="[5,10,25,50]" 
                selectionMode="single"
                [(selection)]="selectedCompany" 
-               dataKey="Id"
-               [globalFilter]="gb">
+               dataKey="Id">
                <p-column field="Id" header="Id" hidden="true"></p-column>
                <p-column field="Name" [sortable]="true" header="Name"></p-column>
                <p-column field="Address" [sortable]="true" header="Address"></p-column>
@@ -20,7 +19,7 @@
                <p-footer>
                 <div class="ui-helper-clearfix datatable-footer" style="width:100%">
                     <button type="button" pButton (click)="onEditCompany()" [disabled]="!selectedCompany" label="Edit"></button>
-                    <button type="button" pButton (click)="deleteConfirm(selectedCompany)" [disabled]="!selectedCompany" label="Delete"></button>
+                    <button type="button" pButton (click)="deleteConfirm()" [disabled]="!selectedCompany" label="Delete"></button>
                 </div>
               </p-footer>
   </p-dataTable>

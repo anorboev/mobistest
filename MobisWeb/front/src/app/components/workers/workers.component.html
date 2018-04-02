@@ -24,8 +24,7 @@
                  [rowsPerPageOptions]="[5,10,25,50]" 
                  selectionMode="single"
                  [(selection)]="selectedWorker" 
-                 dataKey="Id"
-                 [globalFilter]="gb">
+                 dataKey="Id">
       <p-column field="Id" header="Id" hidden="true"></p-column>
       <p-column field="FullName" [sortable]="true" header="Name"></p-column>
       <p-column field="Address" [sortable]="true" header="Address"></p-column>
@@ -34,7 +33,7 @@
       <p-footer>
         <div class="ui-helper-clearfix datatable-footer" style="width:100%">
           <button type="button" pButton (click)="onEditWorker()" [disabled]="!selectedWorker" label="Edit"></button>
-          <button type="button" pButton (click)="deleteConfirm(selectedWorker.Id)" [disabled]="!selectedWorker" label="Delete"></button>
+          <button type="button" pButton (click)="deleteConfirm()" [disabled]="!selectedWorker" label="Delete"></button>
         </div>
       </p-footer>
     </p-dataTable>

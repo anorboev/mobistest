@@ -10,8 +10,7 @@
                [rowsPerPageOptions]="[5,10,25,50]" 
                selectionMode="single"
                [(selection)]="selectedTask" 
-               dataKey="Id"
-               [globalFilter]="gb">
+               dataKey="Id">
                <p-column field="Id" header="Id" hidden="true"></p-column>
                <p-column field="TaskDesc" [sortable]="true" header="Task Description"></p-column>
                <p-column field="Deadline" [sortable]="true" header="Deadline"></p-column>
@@ -19,7 +18,7 @@
                <p-footer>
                 <div class="ui-helper-clearfix datatable-footer" style="width:100%">
                     <button type="button" pButton (click)="onEditTask()" [disabled]="!selectedTask" label="Edit"></button>
-                    <button type="button" pButton (click)="deleteConfirm(selectedTask.Id)" [disabled]="!selectedTask" label="Delete"></button>
+                    <button type="button" pButton (click)="deleteConfirm()" [disabled]="!selectedTask" label="Delete"></button>
                 </div>
               </p-footer>
   </p-dataTable>
