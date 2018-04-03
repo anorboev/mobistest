@@ -32,7 +32,7 @@ export class TaskCreateComponent implements OnInit {
     this.taskForm = this.formBuilder.group({
       TaskDesc: [null, Validators.required],
       Deadline:[null, Validators.required],
-      Priority: [null, Validators.required]
+      Priority: [1, Validators.required]
     });
   }
 

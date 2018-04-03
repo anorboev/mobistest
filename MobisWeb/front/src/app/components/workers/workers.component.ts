@@ -10,6 +10,7 @@ import { ConfirmationService } from 'primeng/primeng';
 })
 export class WorkersComponent implements OnInit {
   companies: SelectItem[];
+  companies2: SelectItem[];
   companyId: number;
   selectedWorker: Worker;
   workers: Worker[];
@@ -21,7 +22,11 @@ export class WorkersComponent implements OnInit {
               private confirmationService: ConfirmationService) { }
 
   ngOnInit() {
-    this.cService.getForDropDown().subscribe(c => this.companies = c.splice(1, c.length - 1));
+    this.cService.getForDropDown().subscribe(c => {
+      this.companies = c;
+      this.companies2 = this.companies.map(x => Object.assign({}, x));
+      this.companies2[0].label = "Select";
+    });
     this.getWorkers();
   }
 

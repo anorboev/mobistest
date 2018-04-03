@@ -11,6 +11,7 @@ import { SelectItem } from 'primeng/primeng';
 })
 export class WorkerCreateComponent implements OnInit {
   
+ 
   constructor(private formBuilder: FormBuilder, 
               private service : WorkerService) { }
   @Output() onCreated = new EventEmitter<boolean>();
@@ -19,7 +20,7 @@ export class WorkerCreateComponent implements OnInit {
   workerForm: FormGroup;
 
   ngOnInit() {
-    this.initForm();
+    this.initForm();    
   }
 
   private initForm() {   

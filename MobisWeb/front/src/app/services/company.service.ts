@@ -46,7 +46,7 @@ export class CompanyService {
   }
 
   getForDropDown(){
-    let url = this.baseUrl + '/fordropdown';
+    let url = this.baseUrl + 'fordropdown';
     return this.http.get(url)
               .map(response => response.json())
               .catch(this.handleError);

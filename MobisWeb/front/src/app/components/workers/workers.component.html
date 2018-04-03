@@ -53,8 +53,9 @@
     [width]="350"
     [height]="450">
     <app-worker-create
+      *ngIf="createWorkerVisible"
       (onCreated)="onEdit($event)"
-      [companies]="companies">
+      [companies]="companies2">
     </app-worker-create>
   </p-dialog>
   
@@ -67,7 +68,7 @@
       *ngIf="editDialogVisible"
       (onEdited)="onEdit($event)"
       [worker] = 'selectedWorker'
-      [companies]="companies">
+      [companies]="companies2">
     </app-worker-edit>
   </p-dialog>
   <p-confirmDialog header="Confirmation" icon="fa fa-question-circle" width="425"></p-confirmDialog>
